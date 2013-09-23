@@ -5,9 +5,9 @@ using System.Text;
 
 namespace CommonClass
 {
-    public class UserConfig : IDependencyItem
+    public class UserConfig
     {
-        public string DependencyKey { get; set; }
+        public string Name { get; set; }
 
         public int Version { get; set; }
     }

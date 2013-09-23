@@ -49,7 +49,7 @@ namespace CommonClass.ConsoleTest
                 {
                     if (_cahe.Get("DateTime") == null)
                     {
-                        CommonCacheDependency dep = new CommonCacheDependency("john");
+                        UserConfigCacheDependency dep = new UserConfigCacheDependency("edward");
                         Console.WriteLine(dep.HasChanged);
                         Console.WriteLine(dep.UtcLastModified.ToString("yyyy-MM-dd HH:mm:ss"));
                         CacheHelper.Insert("DateTime", DateTime.Now, dep);

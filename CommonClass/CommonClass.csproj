@@ -43,11 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomCacheDependency\CacheHelper.cs" />
     <Compile Include="CustomCacheDependency\CommonCacheDependency.cs" />
-    <Compile Include="CustomCacheDependency\CustomCacheDependency.cs" />
-    <Compile Include="CustomCacheDependency\CustomCacheDependencyManager.cs" />
-    <Compile Include="CustomCacheDependency\DependencyKeyException.cs" />
+    <Compile Include="CustomCacheDependency\CacheHelper.cs" />
+    <Compile Include="CustomCacheDependency\UserConfigCacheDependency.cs" />
+    <Compile Include="CustomCacheDependency\UserConfigCacheDependencyManager.cs" />
+    <Compile Include="CustomCacheDependency\CommonDependencyManager.cs" />
     <Compile Include="CustomCacheDependency\UserConfig.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
