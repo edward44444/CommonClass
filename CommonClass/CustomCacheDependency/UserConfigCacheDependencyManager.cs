@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CommonClass
 {
-    public class UserConfigCacheDependencyManager : CommonDependencyManager<UserConfig>
+    public class UserConfigCacheDependencyManager : CommonCacheDependencyManager<UserConfig>
     {
         protected override IList<UserConfig> GetDependItems()
         {

@@ -47,7 +47,7 @@
     <Compile Include="CustomCacheDependency\CacheHelper.cs" />
     <Compile Include="CustomCacheDependency\UserConfigCacheDependency.cs" />
     <Compile Include="CustomCacheDependency\UserConfigCacheDependencyManager.cs" />
-    <Compile Include="CustomCacheDependency\CommonDependencyManager.cs" />
+    <Compile Include="CustomCacheDependency\CommonCacheDependencyManager.cs" />
     <Compile Include="CustomCacheDependency\UserConfig.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

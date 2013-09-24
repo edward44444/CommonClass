@@ -8,7 +8,7 @@ namespace CommonClass
 {
     public abstract class CommonCacheDependency
     {
-        public abstract CommonDependencyManager DependencyManager { get; }
+        public abstract CommonCacheDependencyManager CacheDependencyManager { get; }
 
         public CacheDependency InnerCacheDependency { get; private set; }
 
@@ -39,9 +39,9 @@ namespace CommonClass
             : base()
         {
             this._depkey = depkey;
-            DependencyManager.EnsureDependItemIsPooled();
-            InnerCacheDependency = new CacheDependency(null, new string[] { DependencyManager.GetMoniterKey(depkey) });
-            DependencyManager.InitialPolling();
+            CacheDependencyManager.EnsureDependItemIsPooled();
+            InnerCacheDependency = new CacheDependency(null, new string[] { CacheDependencyManager.GetMoniterKey(depkey) });
+            CacheDependencyManager.InitialPolling();
         }
     }
 }

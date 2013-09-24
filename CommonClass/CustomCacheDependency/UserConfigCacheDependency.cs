@@ -11,7 +11,7 @@ namespace CommonClass
 {
     public class UserConfigCacheDependency : CommonCacheDependency
     {
-        private static CommonDependencyManager _dependencyManager = new UserConfigCacheDependencyManager();
+        private static CommonCacheDependencyManager _cacheDependencyManager = new UserConfigCacheDependencyManager();
 
         public UserConfigCacheDependency(string depkey)
             : base(depkey)
@@ -19,9 +19,9 @@ namespace CommonClass
            
         }
 
-        public override CommonDependencyManager DependencyManager
+        public override CommonCacheDependencyManager CacheDependencyManager
         {
-            get { return _dependencyManager; }
+            get { return _cacheDependencyManager; }
         }
     }
 }
