@@ -6,31 +6,9 @@ using System.Web;
 
 namespace CommonClass
 {
-    public class UserConfigCacheDependencyManager : CommonDependencyManager
+    public class UserConfigCacheDependencyManager : CommonDependencyManager<UserConfig>
     {
-        private Dictionary<string, UserConfig> _depItems;
-
-        public override void EnsureDependencyItemIsPooled()
-        {
-            if (_depItems == null)
-            {
-                lock (SyncObject)
-                {
-                    if (_depItems == null)
-                    {
-                        _depItems = new Dictionary<string, UserConfig>();
-                        foreach (var item in GetUserConfigList())
-                        {
-                            _depItems.Add(item.Name, item);
-                            string moniterKey = GetMoniterKey(item.Name);
-                            HttpRuntime.Cache.Insert(moniterKey, item.Version);
-                        }
-                    }
-                }
-            }
-        }
-
-        private List<UserConfig> GetUserConfigList()
+        protected override IList<UserConfig> GetDependItems()
         {
             List<UserConfig> lstUserConfig = new List<UserConfig>();
             lstUserConfig.Add(new UserConfig { Name = "edward", Version = new Random(Guid.NewGuid().GetHashCode()).Next(1, 10) });
@@ -38,16 +16,14 @@ namespace CommonClass
             return lstUserConfig;
         }
 
-        protected override void PollForChanges(object state)
+        protected override string GetDependKey(UserConfig instance)
         {
-            foreach (var item in GetUserConfigList())
-            {
-                string moniterKey = GetMoniterKey(item.Name);
-                if (!((int)HttpRuntime.Cache.Get(moniterKey)).Equals(item.Version))
-                {
-                    HttpRuntime.Cache.Insert(moniterKey, item.Version);
-                }
-            }
+            return instance.Name;
+        }
+
+        protected override object GetDependValue(UserConfig instance)
+        {
+            return instance.Version;
         }
     }
 }

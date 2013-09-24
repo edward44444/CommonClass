@@ -51,12 +51,12 @@ namespace CommonClass.ConsoleTest
                     {
                         UserConfigCacheDependency dep = new UserConfigCacheDependency("edward");
                         Console.WriteLine(dep.HasChanged);
-                        Console.WriteLine(dep.UtcLastModified.ToString("yyyy-MM-dd HH:mm:ss"));
+                        Console.WriteLine(dep.UtcLastModified);
                         CacheHelper.Insert("DateTime", DateTime.Now, dep);
                     }
                     if (_cahe.Get("DateTime") != null)
                     {
-                        Console.WriteLine(((DateTime)_cahe.Get("DateTime")).ToString("yyyyMMddHHmmss"));
+                        Console.WriteLine("edward"+((DateTime)_cahe.Get("DateTime")).ToString("yyyyMMddHHmmss"));
                     }
                     Thread.Sleep(1000);
                     i++;

@@ -2,9 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace CommonClass
 {
+    public abstract class CommonDependencyManager<T> : CommonDependencyManager
+    {
+        protected Dictionary<string, T> _depItems;
+
+        protected abstract IList<T> GetDependItems();
+
+        protected abstract string GetDependKey(T instance);
+
+        protected abstract object GetDependValue(T instance);
+
+        public override void EnsureDependItemIsPooled()
+        {
+            if (_depItems == null)
+            {
+                lock (SyncObject)
+                {
+                    if (_depItems == null)
+                    {
+                        _depItems = new Dictionary<string, T>();
+                        foreach (var item in GetDependItems())
+                        {
+                            string depKey = GetDependKey(item);
+                            object depValue = GetDependValue(item);
+                            string moniterKey = GetMoniterKey(depKey);
+                            _depItems.Add(depKey, item);
+                            HttpRuntime.Cache.Insert(moniterKey, depValue);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override void PollForChanges(object state)
+        {
+            foreach (var item in GetDependItems())
+            {
+                string depKey = GetDependKey(item);
+                object depValue = GetDependValue(item);
+                string moniterKey = GetMoniterKey(depKey);
+                object cachedItem=HttpRuntime.Cache.Get(moniterKey);
+                if (cachedItem == null)
+                {
+                    continue;
+                }
+                if (!cachedItem.Equals(depValue))
+                {
+                    HttpRuntime.Cache.Insert(moniterKey, depValue);
+                }
+            }
+        }
+    }
+
     public abstract class CommonDependencyManager
     {
         private System.Threading.Timer _timer;
@@ -39,8 +92,8 @@ namespace CommonClass
             }
         }
 
-        public abstract void EnsureDependencyItemIsPooled();
-
+        public abstract void EnsureDependItemIsPooled();
+        
         protected abstract void PollForChanges(object state);
 
         public string GetMoniterKey(string depKey)
@@ -55,6 +108,6 @@ namespace CommonClass
                 _timer.Dispose();
                 _timer = null;
             }
-        }
+        }    
     }
 }

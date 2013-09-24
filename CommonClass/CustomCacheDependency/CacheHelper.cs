@@ -11,12 +11,11 @@ namespace CommonClass
     {
         private static Cache _cache = HttpRuntime.Cache;
 
-        public static void Insert(string key, object value, UserConfigCacheDependency dependencies)
+        public static void Insert(string key, object value, CommonCacheDependency dependencies)
         {
             if (dependencies.HasChanged)
             {
-                string depkey = dependencies.DependencyKey;
-                dependencies = new UserConfigCacheDependency(depkey);
+                _cache.Insert(key, value, null, DateTime.UtcNow.AddMinutes(1), Cache.NoSlidingExpiration);
             }
             _cache.Insert(key, value, dependencies.InnerCacheDependency);
         }

@@ -39,7 +39,7 @@ namespace CommonClass
             : base()
         {
             this._depkey = depkey;
-            DependencyManager.EnsureDependencyItemIsPooled();
+            DependencyManager.EnsureDependItemIsPooled();
             InnerCacheDependency = new CacheDependency(null, new string[] { DependencyManager.GetMoniterKey(depkey) });
             DependencyManager.InitialPolling();
         }
