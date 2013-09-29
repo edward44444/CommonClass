@@ -49,6 +49,10 @@
     <Compile Include="CustomCacheDependency\UserConfigCacheDependencyManager.cs" />
     <Compile Include="CustomCacheDependency\CommonCacheDependencyManager.cs" />
     <Compile Include="CustomCacheDependency\UserConfig.cs" />
+    <Compile Include="FTP\FtpClient.cs" />
+    <Compile Include="FTP\FtpDataStream.cs" />
+    <Compile Include="FTP\FtpReply.cs" />
+    <Compile Include="FTP\FtpSocketStream.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebPageCapturer\IWebPageCapturer.cs" />

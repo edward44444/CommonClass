@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Threading;
 using System.Web;
 using System.Collections.Specialized;
+using System.Net;
+using System.IO;
 
 namespace CommonClass.ConsoleTest
 {
@@ -15,13 +17,49 @@ namespace CommonClass.ConsoleTest
 
         static void Main(string[] args)
         {
-            HttpHelperTest();
+            //HttpHelperTest();
             //WebPageCapturer caputer = new WebPageCapturer(1024, 768);
             //Bitmap image = caputer.Capture("http://www.baidu.com/",3000);
             //image.Save("1.jpg");
 
             //CommonCacheDependencyTest();
-
+            FtpClient ftpClient = new FtpClient("ftp130214.host245.web522.com", 21);
+            ftpClient.Credential = new NetworkCredential("ftp130214", "17u123456789");
+            ftpClient.Connect();
+            List<string>  lstDirectory = ftpClient.ListDirectory("Web/hotel");
+            foreach (string directory in lstDirectory)
+            {
+                Console.WriteLine(directory);
+            }
+            lstDirectory = ftpClient.ListDirectory("Web/");
+            foreach (string directory in lstDirectory)
+            {
+                Console.WriteLine(directory);
+            }
+            using (FileStream fs = new FileStream("index.xml", FileMode.Create))
+            {
+                using (Stream source = ftpClient.OpenRead("Web/hotel/300x200.xml"))
+                {
+                    int readBytes = 0;
+                    byte[] buffer=new byte[1024];
+                    while ((readBytes = source.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        fs.Write(buffer, 0, readBytes);
+                    }
+                }
+            }
+            using (FileStream fs = new FileStream("index.htm", FileMode.Create))
+            {
+                using (Stream source = ftpClient.OpenRead("Web/index.htm"))
+                {
+                    int readBytes = 0;
+                    byte[] buffer = new byte[1024];
+                    while ((readBytes = source.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        fs.Write(buffer, 0, readBytes);
+                    }
+                }
+            }
 
             Console.Read();
         }
@@ -43,7 +81,7 @@ namespace CommonClass.ConsoleTest
                 new UploadFileInfo{FilePath=@"C:\Users\Public\Pictures\Sample Pictures\dog.jpg",ControlName="file1",ContentType="image/jpeg"},
                 new UploadFileInfo{FilePath=@"C:\Users\Public\Pictures\Sample Pictures\123.jpg",ControlName="file2",ContentType="image/jpeg"}
             };
-            Console.WriteLine(httpHelper.UploadFile("http://edward-pc:5566/FileUploader.aspx", form, controlForm, files));
+            Console.WriteLine(httpHelper.UploadFile("http://edward-pc:5566/FileUploader.aspx", files, form, controlForm));
         }
 
         private static void CommonCacheDependencyTest()

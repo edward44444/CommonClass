@@ -198,7 +198,7 @@ namespace CommonClass
             return response;
         }
 
-        public string UploadFile(string uri, NameValueCollection form, NameValueCollection controlForm, UploadFileInfo[] files, CookieContainer cookieContainer = null)
+        public string UploadFile(string uri, UploadFileInfo[] files, NameValueCollection form = null, NameValueCollection controlForm = null, CookieContainer cookieContainer = null)
         {
             HttpWebRequest request = GetRequest(uri, form, controlForm, files, cookieContainer);
             return ExecResponseString(request);
