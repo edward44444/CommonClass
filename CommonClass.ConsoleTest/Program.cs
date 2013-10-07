@@ -8,6 +8,8 @@ using System.Web;
 using System.Collections.Specialized;
 using System.Net;
 using System.IO;
+using CommonClass.Utilities;
+using System.Drawing.Imaging;
 
 namespace CommonClass.ConsoleTest
 {
@@ -22,8 +24,30 @@ namespace CommonClass.ConsoleTest
             //Bitmap image = caputer.Capture("http://www.baidu.com/",3000);
             //image.Save("1.jpg");
 
-            CommonCacheDependencyTest();
+            //CommonCacheDependencyTest();
             //FtpClientTest();
+            
+            byte[] buffer=new byte[1024];
+            int readBytes=0;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (FileStream fs = new FileStream("2.jpg", FileMode.Open))
+                {
+                    while ((readBytes = fs.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ms.Write(buffer, 0, buffer.Length);
+                    }
+                }
+                ms.Position = 0;
+                readBytes=ms.Read(buffer, 0, buffer.Length);
+                ms.Position = 0;
+                //Console.WriteLine(BitConverter.ToString(buffer, 0, readBytes));
+                Console.WriteLine(ImageFormatInspector.IsJPEG(ms));
+                Console.WriteLine(ImageFormatInspector.IsPNG(ms));
+                Console.WriteLine(ImageFormatInspector.IsBMP(ms));
+                //Image image= Image.FromStream(ms);
+                //ImageFormat format = image.RawFormat;
+            }
 
             Console.Read();
         }
