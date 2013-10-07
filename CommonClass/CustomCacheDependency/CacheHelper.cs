@@ -16,6 +16,7 @@ namespace CommonClass
             if (dependencies.HasChanged)
             {
                 _cache.Insert(key, value, null, DateTime.UtcNow.AddMinutes(1), Cache.NoSlidingExpiration);
+                return;
             }
             _cache.Insert(key, value, dependencies.InnerCacheDependency);
         }

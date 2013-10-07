@@ -56,6 +56,7 @@ namespace CommonClass
                     object cachedItem = HttpRuntime.Cache.Get(moniterKey);
                     if (cachedItem == null)
                     {
+                        HttpRuntime.Cache.Insert(moniterKey, depValue);
                         continue;
                     }
                     if (!cachedItem.Equals(depValue))

@@ -22,11 +22,18 @@ namespace CommonClass.ConsoleTest
             //Bitmap image = caputer.Capture("http://www.baidu.com/",3000);
             //image.Save("1.jpg");
 
-            //CommonCacheDependencyTest();
+            CommonCacheDependencyTest();
+            //FtpClientTest();
+
+            Console.Read();
+        }
+
+        private static void FtpClientTest()
+        {
             FtpClient ftpClient = new FtpClient("ftp130214.host245.web522.com", 21);
             ftpClient.Credential = new NetworkCredential("ftp130214", "17u123456789");
             ftpClient.Connect();
-            List<string>  lstDirectory = ftpClient.ListDirectory("Web/hotel");
+            List<string> lstDirectory = ftpClient.ListDirectory("Web/hotel");
             foreach (string directory in lstDirectory)
             {
                 Console.WriteLine(directory);
@@ -41,7 +48,7 @@ namespace CommonClass.ConsoleTest
                 using (Stream source = ftpClient.OpenRead("Web/hotel/300x200.xml"))
                 {
                     int readBytes = 0;
-                    byte[] buffer=new byte[1024];
+                    byte[] buffer = new byte[1024];
                     while ((readBytes = source.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         fs.Write(buffer, 0, readBytes);
@@ -60,8 +67,6 @@ namespace CommonClass.ConsoleTest
                     }
                 }
             }
-
-            Console.Read();
         }
 
         private static void HttpHelperTest()
@@ -93,14 +98,14 @@ namespace CommonClass.ConsoleTest
                 {
                     if (_cahe.Get("DateTime") == null)
                     {
-                        UserConfigCacheDependency dep = new UserConfigCacheDependency("edward");
+                        UserConfigCacheDependency dep = new UserConfigCacheDependency("Jim");
                         Console.WriteLine(dep.HasChanged);
                         Console.WriteLine(dep.UtcLastModified);
                         CacheHelper.Insert("DateTime", DateTime.Now, dep);
                     }
                     if (_cahe.Get("DateTime") != null)
                     {
-                        Console.WriteLine("edward" + ((DateTime)_cahe.Get("DateTime")).ToString("yyyyMMddHHmmss"));
+                        Console.WriteLine("Jim" + ((DateTime)_cahe.Get("DateTime")).ToString("yyyyMMddHHmmss"));
                     }
                     Thread.Sleep(1000);
                     i++;
