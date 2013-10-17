@@ -56,56 +56,80 @@ namespace CommonClass
         public static extern bool InternetSetCookie(string urlName, string cookieName, string cookieData);
 
         [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool InternetGetCookie(string url, string name, StringBuilder data, ref int dataSize);
+        public static extern bool InternetGetCookie(string urlName, string cookieName, StringBuilder cookieData, ref int dataSize);
+
+        [DllImport("kernel32.dll")]
+        public static extern Int32 GetLastError();  
 
         private void WebPageShoot()
         {
-            WebBrowser webBrowser = new WebBrowser();
-            webBrowser.ScrollBarsEnabled = false;
-            webBrowser.ScriptErrorsSuppressed = true;
-            webBrowser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser_DocumentCompleted);
-            StringBuilder sb = new StringBuilder();
-            if (_headers != null && _headers.Count > 0)
+            try
             {
-                foreach (var entry in _headers)
+                WebBrowser webBrowser = new WebBrowser();
+                webBrowser.ScrollBarsEnabled = false;
+                webBrowser.ScriptErrorsSuppressed = true;
+                webBrowser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(webBrowser_DocumentCompleted);
+                StringBuilder sb = new StringBuilder();
+                if (_headers != null && _headers.Count > 0)
                 {
-                    sb.Append(entry.Key).Append(": ").Append(entry.Value).Append("\r\n");
+                    foreach (var entry in _headers)
+                    {
+                        sb.Append(entry.Key).Append(": ").Append(entry.Value).Append("\r\n");
+                    }
                 }
+                if (_headers != null && _headers.Keys.Contains("Cookie"))
+                {
+                    string urlRoot = _url.AbsoluteUri.Substring(0, _url.AbsoluteUri.Length - _url.PathAndQuery.Length);
+                    if (!InternetSetCookie(urlRoot, null, _headers["Cookie"]))
+                    {
+                        throw new Exception("set cookie error,kernel32 error code " + GetLastError());
+                    }
+                    int dataSize = 1000;
+                    StringBuilder sbCookie = new StringBuilder(1000);
+                    if (!InternetGetCookie(urlRoot, null, sbCookie, ref dataSize))
+                    {
+                        throw new Exception("get cookie error,kernel32 error code " + GetLastError());
+                    }
+                }
+                webBrowser.Navigate(_url, null, _postData, sb.ToString());
+                while (webBrowser.ReadyState != WebBrowserReadyState.Complete)
+                {
+                    Application.DoEvents();
+                }
+                webBrowser.Dispose();
             }
-            if (_headers != null && _headers.Keys.Contains("Cookie"))
+            catch
             {
-                string urlRoot = _url.AbsoluteUri.Substring(0, _url.AbsoluteUri.Length - _url.PathAndQuery.Length);
-                InternetSetCookie(urlRoot, null, _headers["Cookie"]);
             }
-            webBrowser.Navigate(_url, null, _postData, sb.ToString());
-            while (webBrowser.ReadyState != WebBrowserReadyState.Complete)
-            {
-                Application.DoEvents();
-            }
-            webBrowser.Dispose();
         }
 
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            // DocumentCompleted will fire for each frame in the web page. 
-            //if (!e.Url.Equals(_url))
-            //{
-            //    return;
-            //}
-            if (this._documentCompleted == true)
+            try
             {
-                return;
+                // DocumentCompleted will fire for each frame in the web page. 
+                //if (!e.Url.Equals(_url))
+                //{
+                //    return;
+                //}
+                if (this._documentCompleted == true)
+                {
+                    return;
+                }
+                WebBrowser webBrowser = (WebBrowser)sender;
+                webBrowser.ClientSize = new Size(Math.Max(_minBrowserWidth, webBrowser.Document.Body.ScrollRectangle.Width), Math.Max(_minBrowserHeight, webBrowser.Document.Body.ScrollRectangle.Bottom));
+                webBrowser.BringToFront();
+                _image = new Bitmap(webBrowser.Bounds.Width, webBrowser.Bounds.Height, PixelFormat.Format32bppArgb);
+                if (_delay > 0)
+                {
+                    Thread.Sleep(_delay);
+                }
+                ((Control)webBrowser).DrawToBitmap(_image, webBrowser.Bounds);
+                this._documentCompleted = true;
             }
-            WebBrowser webBrowser = (WebBrowser)sender;
-            webBrowser.ClientSize = new Size(Math.Max(_minBrowserWidth, webBrowser.Document.Body.ScrollRectangle.Width), Math.Max(_minBrowserHeight, webBrowser.Document.Body.ScrollRectangle.Bottom));
-            webBrowser.BringToFront();
-            _image = new Bitmap(webBrowser.Bounds.Width, webBrowser.Bounds.Height, PixelFormat.Format32bppArgb);
-            if (_delay > 0)
+            catch
             {
-                Thread.Sleep(_delay);
             }
-            ((Control)webBrowser).DrawToBitmap(_image, webBrowser.Bounds);
-            this._documentCompleted = true;
         }
     }
 }
