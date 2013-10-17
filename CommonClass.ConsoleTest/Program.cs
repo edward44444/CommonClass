@@ -24,11 +24,23 @@ namespace CommonClass.ConsoleTest
             //Bitmap image = caputer.Capture("http://www.baidu.com/",3000);
             //image.Save("1.jpg");
 
+            TridentAgent.InternetSetCookie("http://www.edward44444.com", null, "Name=edward;Expires=" + DateTime.UtcNow.AddMinutes(1).ToString("R"));
+            int dataSize = 1000;
+            StringBuilder sbCookie = new StringBuilder(1000);
+            TridentAgent.InternetGetCookie("http://www.edward44444.com", null, sbCookie, ref dataSize);
+
             //CommonCacheDependencyTest();
             //FtpClientTest();
-            
-            byte[] buffer=new byte[1024];
-            int readBytes=0;
+
+            //ImageFormatInspectorTest();
+
+            //Console.Read();
+        }
+
+        private static void ImageFormatInspectorTest()
+        {
+            byte[] buffer = new byte[1024];
+            int readBytes = 0;
             using (MemoryStream ms = new MemoryStream())
             {
                 using (FileStream fs = new FileStream("2.jpg", FileMode.Open))
@@ -39,7 +51,7 @@ namespace CommonClass.ConsoleTest
                     }
                 }
                 ms.Position = 0;
-                readBytes=ms.Read(buffer, 0, buffer.Length);
+                readBytes = ms.Read(buffer, 0, buffer.Length);
                 ms.Position = 0;
                 //Console.WriteLine(BitConverter.ToString(buffer, 0, readBytes));
                 Console.WriteLine(ImageFormatInspector.IsJPEG(ms));
@@ -48,8 +60,6 @@ namespace CommonClass.ConsoleTest
                 //Image image= Image.FromStream(ms);
                 //ImageFormat format = image.RawFormat;
             }
-
-            Console.Read();
         }
 
         private static void FtpClientTest()
